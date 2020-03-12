@@ -25,6 +25,16 @@ parser.add_argument('--task', type=str, default='depth', choices=[
 parser.add_argument('--phase', type=int, default=1, choices=[1, 2])
 
 args = parser.parse_args()
+if args.task == 'normal':
+    args.path = 'exp/normal'
+    args.dynamic_batch_size = 1
+    args.n_epochs = 180
+    args.base_lr = 3e-2
+    args.warmup_epochs = 5
+    args.warmup_lr = -1
+    args.ks_list = '7'
+    args.expand_list = '6'
+    args.depth_list = '4'
 if args.task == 'kernel':
     args.path = 'exp/normal2kernel'
     args.dynamic_batch_size = 1
@@ -205,6 +215,10 @@ if __name__ == '__main__':
                           'ks_list': sorted({min(args.ks_list), max(args.ks_list)}),
                           'expand_ratio_list': sorted({min(args.expand_list), max(args.expand_list)}),
                           'depth_list': sorted({min(net.depth_list), max(net.depth_list)})}
+
+    if args.task == 'normal':
+        train(distributed_run_manager, args,
+              lambda _run_manager, epoch, is_test: validate(_run_manager, epoch, is_test, **validate_func_dict))
     if args.task == 'kernel':
         validate_func_dict['ks_list'] = sorted(args.ks_list)
         if distributed_run_manager.start_epoch == 0:
