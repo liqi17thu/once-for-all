@@ -20,7 +20,7 @@ from elastic_nn.training.progressive_shrinking import load_models
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--task', type=str, default='depth', choices=[
-    'kernel', 'depth', 'expand',
+    'normal', 'kernel', 'depth', 'expand',
 ])
 parser.add_argument('--phase', type=int, default=1, choices=[1, 2])
 
@@ -35,7 +35,7 @@ if args.task == 'normal':
     args.ks_list = '7'
     args.expand_list = '6'
     args.depth_list = '4'
-if args.task == 'kernel':
+elif args.task == 'kernel':
     args.path = 'exp/normal2kernel'
     args.dynamic_batch_size = 1
     args.n_epochs = 120

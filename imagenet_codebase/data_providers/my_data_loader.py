@@ -9,7 +9,7 @@
 import random
 import torch
 import torch.multiprocessing as multiprocessing
-from torch._C import _set_worker_signal_handlers, _update_worker_pids, \
+from torch._C import _set_worker_signal_handlers, _set_worker_pids, \
     _remove_worker_pids, _error_if_any_worker_fails
 from torch.utils.data import SequentialSampler, RandomSampler, BatchSampler
 import signal
@@ -586,7 +586,7 @@ class _DataLoaderIter(object):
             else:
                 self.data_queue = self.worker_result_queue
 
-            _update_worker_pids(id(self), tuple(w.pid for w in self.workers))
+            _set_worker_pids(id(self), tuple(w.pid for w in self.workers))
             _set_SIGCHLD_handler()
             self.worker_pids_set = True
 
@@ -781,7 +781,7 @@ class MyDataLoader(object):
                  num_workers=0, collate_fn=default_collate, pin_memory=False, drop_last=False,
                  timeout=0, worker_init_fn=None):
         print('Use MyDataLoader')
-        
+
         self.dataset = dataset
         self.batch_size = batch_size
         self.num_workers = num_workers
